@@ -1,7 +1,6 @@
 package com.infosys.ctadm.learning.services;
 
 import com.infosys.ctadm.learning.dao.EmployeeDAO;
-import com.infosys.ctadm.learning.dao.EmployeeDAOImpl;
 import com.infosys.ctadm.learning.dto.Employee;
 import com.infosys.ctadm.learning.exceptions.EmployeeNotFoundException;
 import org.junit.jupiter.api.Assertions;
@@ -20,10 +19,10 @@ import java.util.List;
 public class EmployeeServiceImplTest {
 
     @Mock
-    EmployeeDAO dao = new EmployeeDAOImpl();
+    EmployeeDAO dao;
 
     @InjectMocks
-    EmployeeService service = new EmployeeServiceImpl();
+    EmployeeServiceImpl service;
 
 
     @Test
@@ -44,12 +43,12 @@ public class EmployeeServiceImplTest {
 
         final Long EMP_ID = 50L;
         Employee expectedEmp = new Employee(EMP_ID, "Akshay", "Phajage", "akp@gmail.com");
-        Mockito.when(dao.findEmployeeByEmployeeId(EMP_ID)).thenReturn(expectedEmp);
+        Mockito.when(dao.findEmployeeByEmployeeId(Mockito.anyLong())).thenReturn(expectedEmp);
 
         Employee actualEmp = service.fetchEmployeeById(EMP_ID);
 
         Assertions.assertEquals(expectedEmp,actualEmp);
-        Mockito.verify(dao).findEmployeeByEmployeeId(EMP_ID);
+        Mockito.verify(dao).findEmployeeByEmployeeId(ArgumentMatchers.anyLong());
 
     }
 
@@ -71,7 +70,7 @@ public class EmployeeServiceImplTest {
     }
 
     @Test
-    public void testRemoveEmployeeById(){
+    public void testRemoveEmployeeById() throws EmployeeNotFoundException {
         final Long EMP_ID = 100L;
 
         Mockito.doNothing().when(dao).deleteEmployeeByEmployeeId(Mockito.anyLong());
@@ -79,6 +78,20 @@ public class EmployeeServiceImplTest {
         service.removeEmployeeById(EMP_ID);
 
         Mockito.verify(dao).deleteEmployeeByEmployeeId(EMP_ID);
+    }
+
+    @Test
+    public void testRemoveEmployeeById_ShouldThrowException() throws EmployeeNotFoundException {
+        final Long INCORRECT_EMP_ID = 100L;
+
+        Mockito.doThrow(EmployeeNotFoundException.class).when(dao).deleteEmployeeByEmployeeId(Mockito.anyLong());
+
+        Assertions.assertThrows(EmployeeNotFoundException.class,()->{
+            service.removeEmployeeById(INCORRECT_EMP_ID);
+        });
+
+
+        Mockito.verify(dao).deleteEmployeeByEmployeeId(INCORRECT_EMP_ID);
     }
 
 

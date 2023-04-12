@@ -1,6 +1,7 @@
 package com.infosys.ctadm.learning.dao;
 
 import com.infosys.ctadm.learning.dto.Employee;
+import com.infosys.ctadm.learning.exceptions.EmployeeNotFoundException;
 
 import java.util.List;
 
@@ -12,10 +13,10 @@ import java.util.List;
 public interface EmployeeDAO {
 
     Employee saveEmployee(Employee employee);
-    Employee findEmployeeByEmployeeId(Long employeeId);
+    Employee findEmployeeByEmployeeId(Long employeeId) throws EmployeeNotFoundException;
     List<Employee> findAllEmployees();
     List<Employee> findAllEmployeesWithSameFirstName(String firstName);
-    void deleteEmployeeByEmployeeId(Long employeeId);
+    void deleteEmployeeByEmployeeId(Long employeeId) throws EmployeeNotFoundException;
 
 
 }

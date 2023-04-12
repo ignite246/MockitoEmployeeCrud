@@ -11,5 +11,5 @@ public interface EmployeeService {
     Employee fetchEmployeeById(Long employeeId) throws EmployeeNotFoundException;
     List<Employee> fetchEmployeeHavingSameFirstName(String firstName);
     List<Employee> fetchAllEmployees();
-    void removeEmployeeById(Long employeeId);
+    void removeEmployeeById(Long employeeId) throws EmployeeNotFoundException;
 }

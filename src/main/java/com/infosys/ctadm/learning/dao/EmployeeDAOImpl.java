@@ -1,9 +1,11 @@
 package com.infosys.ctadm.learning.dao;
 
 import com.infosys.ctadm.learning.dto.Employee;
+import com.infosys.ctadm.learning.exceptions.EmployeeNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,6 +26,10 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     public Employee saveEmployee(Employee employee) {
         System.out.println("STARTS ===> Saving Employee");
 
+        if(Objects.isNull(employee))
+        {
+            throw new IllegalArgumentException("Employee object cannot be null");
+        }
         employees.add(employee);
 
         System.out.println("ENDS ===> Saving Employee");
@@ -32,7 +38,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
 
     @Override
-    public Employee findEmployeeByEmployeeId(Long employeeId) {
+    public Employee findEmployeeByEmployeeId(Long employeeId) throws EmployeeNotFoundException {
         System.out.println("STARTS ===> Fetching Employee By Id : "+employeeId);
         Optional<Employee> optionalEmployee = employees.stream()
                 .filter(employee -> employee.getEmpId().equals(employeeId)).findFirst();
@@ -41,7 +47,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             return optionalEmployee.get();
         } else {
             System.out.println("ENDS ===> Fetching EmployeeById ==> Exception");
-            throw new RuntimeException("No employees could be found with given employee Id : " + employeeId);
+            throw new EmployeeNotFoundException("No employees could be found with given employee Id : " + employeeId);
         }
 
 
@@ -62,7 +68,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
 
     @Override
-    public void deleteEmployeeByEmployeeId(Long employeeId) {
+    public void deleteEmployeeByEmployeeId(Long employeeId) throws EmployeeNotFoundException {
         Employee employeeFound = findEmployeeByEmployeeId(employeeId);
         employees.remove(employeeFound);
     }
